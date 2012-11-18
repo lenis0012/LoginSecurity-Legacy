@@ -1,0 +1,15 @@
+No permissions: No permissions.
+Password to short: Password must be longer than {Min}.
+Password to long: Password must be shorter than {Max}.
+Invalid password: Invalid password.
+Login succesfull: Loged in!
+Register: Please register using /setpass <password>.
+Login: Please login using /login <password>.
+Registered: Set password to: {Password}
+Not enough args: Not enough args!
+To many args: To many args!
+Session continue: Extending session from last login.
+Changed password: Changed password to: {Password}
+Removed password: Removed password.
+Password already set: You already got a password.
+Password required: Password is required.

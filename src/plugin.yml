@@ -1,0 +1,20 @@
+name: LoginSecurity
+version: 1.6.4
+main: me.lenis0012.ls.ls
+description: Secure your minecraft account with a password
+commands:
+  setpass:
+    description: set a password.
+    usage: /setpass <password>
+  login:
+    description: login with your password.
+    usage: /login <password>
+  rmpass:
+    description: remove your password.
+    usage: /rmpass <password>
+  changepass:
+    description: change your password.
+    usage: /changepass <old password> <new password>
+  lac:
+    description: LoginSecurity Admin command.
+    usage: /lac <args>
