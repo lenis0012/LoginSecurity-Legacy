@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import me.lenis0012.ls.commands.AdminCommand;
 import me.lenis0012.ls.commands.ChangePassCommand;
 import me.lenis0012.ls.commands.LoginCommand;
 import me.lenis0012.ls.commands.RmpassCommand;
 import me.lenis0012.ls.commands.SetpassCommand;
 import me.lenis0012.ls.Util.Metrics;
+import me.lenis0012.ls.Util.Version;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,7 +36,7 @@ public class ls extends JavaPlugin{
 		log.info("[LoginSecurity] safety first ;)");
 		getServer().getPluginManager().registerEvents(new lsLogin(this), this);
 		getServer().getPluginManager().registerEvents(new LogginSession(this), this);
-		//getServer().getPluginManager().registerEvents(new Version(this), this);
+		getServer().getPluginManager().registerEvents(new Version(this), this);
 		final FileConfiguration config = this.getConfig();
 		getCustomConfig().options().header("please do not remove the the data file");
 		config.addDefault("options.password-required", false);
@@ -72,8 +72,9 @@ public class ls extends JavaPlugin{
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
-		} catch (IOException e) {
-			log.info("Failed sending stats to mcstats.org.");
+		} catch (IOException e)
+		{
+			log.info("[LoginSecurity] Failed sending stats to mcstats.org");
 		}
 	}
 	public void onDisable(){

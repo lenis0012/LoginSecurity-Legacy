@@ -23,7 +23,7 @@ public class SetpassCommand implements CommandExecutor{
 	    if (!(sender instanceof Player)) {
 	        return true;
 	    }
-	    if(LoginData.hasPass(pname, plugin))
+	    if(LoginData.hasPass(pname.toLowerCase(), plugin))
 		{
 			sender.sendMessage("[LoginSecurity] " +  ChatColor.RED + Messages.getMessage(14, plugin));
 			return true;

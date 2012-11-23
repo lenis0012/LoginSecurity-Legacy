@@ -97,7 +97,7 @@ public class lsLogin implements Listener{
 						}
 					}
 				}
-			}, plugin.getConfig().getInt("options.timeout.time (sec)") * 60);
+			}, plugin.getConfig().getInt("options.timeout.time (sec)") * 20);
 		}
 	}
 	@EventHandler

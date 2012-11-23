@@ -34,6 +34,18 @@ public class ChangePassCommand implements CommandExecutor{
 			sender.sendMessage(cmnd.getUsage());
 			return true;
 		}
+		if(args[1].length() < plugin.getConfig().getInt("options.min-length"))
+		{
+			String min = String.valueOf(plugin.getConfig().getInt("options.min-length"));
+			sender.sendMessage("[LoginSecurity] " +  ChatColor.RED + Messages.getMessage(2, plugin).replace("{Min}", min));
+			return true;
+		}
+		if(args[1].length() > plugin.getConfig().getInt("options.max-lenght"))
+		{
+			String max = String.valueOf(plugin.getConfig().getInt("options.max-lenght"));
+			sender.sendMessage("[LoginSecurity] " +  ChatColor.RED + Messages.getMessage(3, plugin).replace("{Max}", max));
+			return true;
+		}
 		if(plugin.getConfig().getBoolean("options.use-MD5 Enryption") == true)
 		{
 		try{

@@ -1,5 +1,5 @@
 name: LoginSecurity
-version: 1.6.4
+version: 1.6.5.1
 main: me.lenis0012.ls.ls
 description: Secure your minecraft account with a password
 commands:

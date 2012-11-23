@@ -70,6 +70,6 @@ public class LogginSession implements Listener{
 				}
 			}
 		}
-		, 20L, 60L);
+		, 20L, 20L);
 	}
 }
