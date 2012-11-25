@@ -1,5 +1,7 @@
 package me.lenis0012.ls;
 
+import java.util.WeakHashMap;
+
 import me.lenis0012.ls.ls;
 
 import org.bukkit.Bukkit;
@@ -35,6 +37,7 @@ public class lsLogin implements Listener{
 	public boolean enable;
 	public static ls plugin;
 	public lsLogin(ls instance) { plugin = instance; }
+	private WeakHashMap<String, Player> users = new WeakHashMap<String, Player>();
 
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent join)
@@ -50,6 +53,17 @@ public class lsLogin implements Listener{
 			player.kickPlayer("Username to short.");
 			return;
 		}
+		
+		String[] chars = plugin.getConfig().getString("options.blocked-chars").split(",");
+		for(String s : chars)
+		{
+			if(pname.contains(s))
+			{
+				player.kickPlayer("Your username may not contain: "+ChatColor.RED+chars.toString().replace("[", "").replace("]", ""));
+				return;
+			}
+		}
+		
 		if(plugin.ignore.contains(pname) && player.getAddress().getAddress().toString().equals(plugin.getCustomConfig().getString("ip." + pname.toLowerCase())))
 		{
 			player.sendMessage("[LoginSecurity] " + Messages.getMessage(11, plugin));
@@ -83,22 +97,8 @@ public class lsLogin implements Listener{
 			return;
 		}
 		
-		if(plugin.getConfig().getBoolean("options.timeout.use"))
-		{
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable()
-			{
-				public void run()
-				{
-					if(player.isOnline())
-					{
-						if(plugin.invalid.contains(pname))
-						{
-							player.kickPlayer("Login timed out.");
-						}
-					}
-				}
-			}, plugin.getConfig().getInt("options.timeout.time (sec)") * 20);
-		}
+		users.put(pname, player);
+		this.task(pname);
 	}
 	@EventHandler
 	public void onPlayerMoving(PlayerMoveEvent move){
@@ -290,6 +290,30 @@ public class lsLogin implements Listener{
 		if(plugin.invalid.contains(pname))
 		{
 			event.setCancelled(true);
+		}
+	}
+	
+	public void task(final String pname)
+	{
+		if(plugin.getConfig().getBoolean("options.timeout.use"))
+		{
+			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable()
+			{
+				public void run()
+				{
+					try
+					{
+						Player player = users.get(pname);
+						if(player.isOnline())
+						{
+							if(plugin.invalid.contains(pname))
+							{
+								player.kickPlayer("Login timed out.");
+							}
+						}
+					} catch(Exception e) {}
+				}
+			}, plugin.getConfig().getInt("options.timeout.time (sec)") * 20);
 		}
 	}
 }

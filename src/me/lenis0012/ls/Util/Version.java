@@ -45,7 +45,7 @@ public class Version implements Listener{
 		} catch(Exception e)
 		{
 		}
-		return true;
+		return false;
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
@@ -63,7 +63,7 @@ public class Version implements Listener{
 						String oldVersion = plugin.getDescription().getVersion();
 						boolean newVersion = checkForUpdate(oldVersion);
 						if (newVersion) // do we have a version update? => notify player
-							player.sendMessage("[LoginSecurity] " + ChatColor.YELLOW + "Update available, update v" + oldVersion + " to v" + newVersion);
+							player.sendMessage("[LoginSecurity] " + ChatColor.YELLOW + "Update available, check BukkitDev");
 						} catch (Exception e) {
 							player.sendMessage("LoginSecurity could not get version update - see log for details.");
 							plugin.log.warning("[LoginSecurity] Could not connect to remote server to check for update. Exception said: " + e.getMessage());

@@ -42,6 +42,7 @@ public class ls extends JavaPlugin{
 		config.addDefault("options.password-required", false);
 		config.addDefault("options.use-MD5 Enryption", true);
 		config.addDefault("options.blindness", true);
+		config.addDefault("options.blocked-chars", "!,@,#,$,%,^,&,*,(,),-,:,{,},[,]");
 		config.addDefault("options.update-checker", true);
 		config.addDefault("options.min-length", 3);
 		config.addDefault("options.max-lenght", 16);
