@@ -36,7 +36,7 @@ public class LogginSession implements Listener{
 	public void RunTask()
 	{
 		tasking = true;
-		plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable()
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 		{
 			public void run()
 			{

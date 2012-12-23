@@ -297,7 +297,7 @@ public class lsLogin implements Listener{
 	{
 		if(plugin.getConfig().getBoolean("options.timeout.use"))
 		{
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable()
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
 				public void run()
 				{

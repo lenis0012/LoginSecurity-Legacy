@@ -56,7 +56,7 @@ public class Version implements Listener{
 		}
 		final Player player = event.getPlayer();
 		if (player != null && player.hasPermission("ls.admin")) {
-			plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() { // create a new anonymous task/thread that will check the version asyncronously
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() { // create a new anonymous task/thread that will check the version asyncronously
 				@Override
 				public void run() {
 					try {

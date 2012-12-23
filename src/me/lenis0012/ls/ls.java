@@ -85,24 +85,30 @@ public class ls extends JavaPlugin{
 		reloadCustomConfig();
 		LoginData.stopCon(this);
 	}
-	public void reloadCustomConfig() {
-        if (customConfigFile == null) {
-        customConfigFile = new File(getDataFolder(), "data.yml");
+	public void reloadCustomConfig()
+	{
+        if (customConfigFile == null)
+        {
+        	customConfigFile = new File(getDataFolder(), "data.yml");
         }
         customConfig = YamlConfiguration.loadConfiguration(customConfigFile);
         java.io.InputStream defConfigStream = this.getResource("data.yml");
-        if (defConfigStream != null) {
+        if (defConfigStream != null)
+        {
             YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
             customConfig.setDefaults(defConfig);
         }
     }
-	public FileConfiguration getCustomConfig(){
-        if (customConfig == null) {
+	public FileConfiguration getCustomConfig()
+	{
+        if (customConfig == null)
+        {
             this.reloadCustomConfig();
         }
         return customConfig;
     }
-	public void saveCustomConfig() {
+	public void saveCustomConfig()
+	{
         if (customConfig == null || customConfigFile == null) {
         return;
         }
@@ -114,7 +120,7 @@ public class ls extends JavaPlugin{
 	
 	public void Task()
 	{
-		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable()
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
 		{
 			public void run()
 			{
