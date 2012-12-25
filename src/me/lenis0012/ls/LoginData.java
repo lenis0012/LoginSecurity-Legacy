@@ -85,8 +85,7 @@ public class LoginData
 				return true;
 		}else
 		{
-			if(plugin.getCustomConfig().getBoolean("password.use." + user) == true)
-				return true;
+			return getPass(user, plugin) != null;
 		}
 		return false;
 	}
@@ -106,7 +105,7 @@ public class LoginData
 			}
 		}else
 		{
-			plugin.getCustomConfig().set("password.use." + user, false);
+			plugin.getCustomConfig().set("password.password." + user, null);
 			plugin.saveCustomConfig();
 		}
 	}
@@ -141,7 +140,6 @@ public class LoginData
 			}
 		}else
 		{
-			plugin.getCustomConfig().set("password.use." + user, true);
 			plugin.getCustomConfig().set("password.password." + user, pass);
 			plugin.saveCustomConfig();
 		}
