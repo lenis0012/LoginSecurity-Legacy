@@ -13,6 +13,7 @@ import me.lenis0012.ls.commands.RmpassCommand;
 import me.lenis0012.ls.commands.SetpassCommand;
 import me.lenis0012.ls.Util.Metrics;
 import me.lenis0012.ls.Util.Version;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,6 +31,7 @@ public class ls extends JavaPlugin{
 	public List<String> ignore = new ArrayList<String>();
 	public boolean Tasker = true;
 	public int delay = 0;
+	public List<String> onlinePlayers = new ArrayList<String>();
 
 	@Override
 	public void onEnable(){
@@ -77,7 +79,12 @@ public class ls extends JavaPlugin{
 		{
 			log.info("[LoginSecurity] Failed sending stats to mcstats.org");
 		}
+		
+		for(Player player : Bukkit.getServer().getOnlinePlayers()) {
+			this.onlinePlayers.add(player.getName());
+		}
 	}
+	
 	public void onDisable(){
 		Tasker = false;
 		log.info("[LoginSecurity] turned off");
@@ -136,7 +143,7 @@ public class ls extends JavaPlugin{
 								String pname = player.getName();
 								if(ls.this.invalid.contains(pname))
 								{
-									if(ls.this.getConfig().getBoolean("options.password-required") == true && !ls.this.getCustomConfig().getBoolean("password.use." + pname.toLowerCase()) == true){
+									if(ls.this.getConfig().getBoolean("options.password-required") == true && !LoginData.hasPass(player.getName(), ls.this)){
 										player.sendMessage(ChatColor.RED + Messages.getMessage(6, ls.this));
 									}else
 									{
@@ -146,12 +153,12 @@ public class ls extends JavaPlugin{
 							}
 						}
 					}
-					if(delay == 60)
+					/*if(delay == 60)
 					{
 						ls.this.delay = 0;
 						LoginData.PurgeDatabase(ls.this);
 					}
-					ls.this.delay++;
+					ls.this.delay++;*/
 				} catch(Exception e)
 				{
 					//nothing

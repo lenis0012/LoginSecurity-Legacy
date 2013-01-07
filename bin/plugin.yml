@@ -1,8 +1,9 @@
 name: LoginSecurity
-version: 1.6.8
+version: 1.6.9.1
 main: me.lenis0012.ls.ls
 author: lenis0012
 authors: [lenis0012]
+softdepend: [ProtocolLib]
 description: Secure your minecraft account with a password
 commands:
   setpass:

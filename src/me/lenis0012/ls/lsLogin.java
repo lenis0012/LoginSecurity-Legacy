@@ -1,13 +1,8 @@
 package me.lenis0012.ls;
 
 import java.util.WeakHashMap;
-
 import me.lenis0012.ls.ls;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,8 +15,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -29,10 +22,13 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+@SuppressWarnings("deprecation")
 public class lsLogin implements Listener{
 	public boolean enable;
 	public static ls plugin;
@@ -44,6 +40,8 @@ public class lsLogin implements Listener{
 	{
 		final Player player = join.getPlayer();
 		final String pname = player.getName();
+		
+		plugin.onlinePlayers.add(pname);
 		
 		if(!player.isOnline())
 			return;
@@ -100,13 +98,13 @@ public class lsLogin implements Listener{
 		users.put(pname, player);
 		this.task(pname);
 	}
+	
 	@EventHandler
-	public void onPlayerMoving(PlayerMoveEvent move){
+	public void onPlayerMove(PlayerMoveEvent move){
 		Player player = move.getPlayer();
 		String pname = player.getName();
-		Location loc = player.getLocation();
 		if(plugin.invalid.contains(pname)){
-			player.teleport(loc);
+			player.teleport(move.getFrom());
 		}else if(player.hasPotionEffect(PotionEffectType.BLINDNESS))
 			player.removePotionEffect(PotionEffectType.BLINDNESS);
 	}
@@ -121,29 +119,21 @@ public class lsLogin implements Listener{
 	}
 	
 	@EventHandler
-	public void onItemDrop(PlayerDropItemEvent drop)
-	{
+	public void onItemDrop(PlayerDropItemEvent drop) {
 		Player player = drop.getPlayer();
 		String pname = player.getName();
-		if(plugin.invalid.contains(pname))
-		{
+		if(plugin.invalid.contains(pname)) {
 			drop.setCancelled(true);
 		}
 	}
 	
-	@EventHandler (priority = EventPriority.LOWEST)
-	public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event)
-	{
-		Player player = Bukkit.getServer().getPlayer(event.getName());
-		if(player != null)
-		{
-			if(player.isOnline())
-			{
-				if(!plugin.invalid.contains(player.getName()))
-				{
-					event.setKickMessage("You are already ingame.");
-					event.setLoginResult(Result.KICK_OTHER);
-				}
+	@EventHandler
+	public void onPlayerPreLogin(PlayerPreLoginEvent event) {
+		String name = event.getName();
+		if(plugin.onlinePlayers.contains(name)) {
+			if(!plugin.invalid.contains(name)) {
+				event.setKickMessage("You are already ingame.");
+				event.setResult(Result.KICK_OTHER);
 			}
 		}
 	}
@@ -160,12 +150,10 @@ public class lsLogin implements Listener{
 	}
 	
 	@EventHandler
-	public void onBlockBreak(BlockBreakEvent bbreak)
-	{
+	public void onBlockBreak(BlockBreakEvent bbreak) {
 		Player player = bbreak.getPlayer();
 		String pname = player.getName();
-		if(plugin.invalid.contains(pname))
-		{
+		if(plugin.invalid.contains(pname)) {
 			bbreak.setCancelled(true);
 		}
 	}
@@ -178,10 +166,6 @@ public class lsLogin implements Listener{
 		if(plugin.invalid.contains(pname))
 		{
 			place.setCancelled(true);
-		}
-		if(place.getBlock().getType() == Material.getMaterial(22))
-		{
-			
 		}
 	}
 	
@@ -219,10 +203,11 @@ public class lsLogin implements Listener{
 				LoginData.changeDate(pname.toLowerCase(), plugin);
 			}
 		}
+		plugin.onlinePlayers.remove(pname);
 	}
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent command){
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent command) {
 		Player player = command.getPlayer();
 		String pname = player.getName();
 		if(plugin.invalid.contains(pname)){

@@ -20,49 +20,49 @@ public class Messages
 				switch(s)
 				{
 					case 1:
-						return cfg.getString("No permissions");
+						return cfg.getString("No permissions", om(1));
 						
 					case 2:
-						return cfg.getString("Password to short");
+						return cfg.getString("Password to short", om(2));
 						
 					case 3:
-						return cfg.getString("Password to long");
+						return cfg.getString("Password to long", om(3));
 						
 					case 4:
-						return cfg.getString("Invalid password");
+						return cfg.getString("Invalid password", om(4));
 						
 					case 5:
-						return cfg.getString("Login succesfull");
+						return cfg.getString("Login succesfull", om(5));
 						
 					case 6:
-						return cfg.getString("Register");
+						return cfg.getString("Register", om(6));
 						
 					case 7:
-						return cfg.getString("Login");
+						return cfg.getString("Login", om(7));
 						
 					case 8:
-						return cfg.getString("Registered");
+						return cfg.getString("Registered", om(8));
 						
 					case 9:
-						return cfg.getString("Not enough args");
+						return cfg.getString("Not enough args", om(9));
 						
 					case 10:
-						return cfg.getString("To many args");
+						return cfg.getString("To many args", om(10));
 						
 					case 11:
-						return cfg.getString("Session continue");
+						return cfg.getString("Session continue", om(11));
 						
 					case 12:
-						return cfg.getString("Changed password");
+						return cfg.getString("Changed password", om(12));
 						
 					case 13:
-						return cfg.getString("Removed password");
+						return cfg.getString("Removed password", om(13));
 						
 					case 14:
-						return cfg.getString("Password already set");
+						return cfg.getString("Password already set", om(14));
 						
 					case 15:
-						return cfg.getString("Password required");
+						return cfg.getString("Password required", om(15));
 				}
 			} catch(YAMLException e)
 			{
@@ -70,8 +70,15 @@ public class Messages
 			}
 		}else
 		{
-			switch(s)
-			{
+			return om(s);
+		}
+		return "";
+	}
+	
+	public static String om(int s)
+	{
+		switch(s)
+		{
 				case 1:
 					return "No permissions.";
 					
@@ -117,7 +124,6 @@ public class Messages
 				case 15:
 					return "Password is required.";
 			}
-		}
 		return "";
 	}
 }
