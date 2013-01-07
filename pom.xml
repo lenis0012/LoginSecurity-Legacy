@@ -7,7 +7,7 @@
   <version>1.6.9.1</version>
   <packaging>jar</packaging>
 
-  <name>BKCommonLib</name>
+  <name>LoginSecurity</name>
   <url>http://dev.bukkit.org/server-mods/loginsecurity/</url>
 
   <properties>
