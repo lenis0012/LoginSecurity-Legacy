@@ -206,13 +206,17 @@ public class lsLogin implements Listener{
 		plugin.onlinePlayers.remove(pname);
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent command) {
 		Player player = command.getPlayer();
 		String pname = player.getName();
 		if(plugin.invalid.contains(pname)){
 		    if(!command.getMessage().startsWith("/login") && !command.getMessage().startsWith("/setpass"))
 		  	{
+		    	//faction fix start
+		    	if(command.getMessage().startsWith("/f"))
+		    		command.setMessage("/blablablablabla"); //this command does not exist :P
+		    	//faction fix end
 		    	command.setCancelled(true);
 		  	}
 		}
