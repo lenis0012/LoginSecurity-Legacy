@@ -12,18 +12,16 @@ import me.lenis0012.ls.commands.LoginCommand;
 import me.lenis0012.ls.commands.RmpassCommand;
 import me.lenis0012.ls.commands.SetpassCommand;
 import me.lenis0012.ls.Util.Metrics;
-import me.lenis0012.ls.Util.Version;
+import me.lenis0012.ls.Util.Updater;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ls extends JavaPlugin{
-	public static String Version = "1.5.7";
 	private FileConfiguration customConfig = null;
 	private File customConfigFile = null;
 	public Logger log = Logger.getLogger("Minecraft");
@@ -32,13 +30,14 @@ public class ls extends JavaPlugin{
 	public boolean Tasker = true;
 	public int delay = 0;
 	public List<String> onlinePlayers = new ArrayList<String>();
+	private static boolean lockDown = false;
+	public static Updater updater;
 
 	@Override
 	public void onEnable(){
 		log.info("[LoginSecurity] safety first ;)");
 		getServer().getPluginManager().registerEvents(new lsLogin(this), this);
 		getServer().getPluginManager().registerEvents(new LogginSession(this), this);
-		getServer().getPluginManager().registerEvents(new Version(this), this);
 		final FileConfiguration config = this.getConfig();
 		getCustomConfig().options().header("please do not remove the the data file");
 		config.addDefault("options.password-required", false);
@@ -75,6 +74,9 @@ public class ls extends JavaPlugin{
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
+			if(config.getBoolean("options.update-checker")) {
+				updater = new Updater(this, log, "loginsecurity", this.getFile(), "ls.admin");
+			}
 		} catch (IOException e)
 		{
 			log.info("[LoginSecurity] Failed sending stats to mcstats.org");
@@ -125,46 +127,65 @@ public class ls extends JavaPlugin{
             this.getLogger().log(Level.SEVERE, "Could not save config to " + customConfigFile, ex);}
 	}
 	
+	public final void handleTick() {
+			for(Player player : Bukkit.getServer().getOnlinePlayers()) {
+				String pname = player.getName();
+				if(invalid.contains(pname))
+				{
+					if(getConfig().getBoolean("options.password-required") == true && !LoginData.hasPass(player.getName(), ls.this)){
+						player.sendMessage(ChatColor.RED + Messages.getMessage(6, ls.this));
+					}else
+					{
+						player.sendMessage(ChatColor.RED + Messages.getMessage(7, ls.this));
+					}
+				}
+			}
+			/*if(delay == 60)
+			{
+				ls.this.delay = 0;
+				LoginData.PurgeDatabase(ls.this);
+			}
+			ls.this.delay++;*/
+	}
+	
+	public static void setLockDown(boolean value) {
+		if(value) {
+			for(Player player : Bukkit.getServer().getOnlinePlayers()) {
+				player.kickPlayer("We are currently undergoing SQL problems");
+			}
+		}
+		lockDown = value;
+	}
+	
+	public static boolean isLockDown() {
+		return lockDown;
+	}
+	
 	public void Task()
 	{
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
 		{
 			public void run()
 			{
-				try
-				{
-					for(World world : ls.this.getServer().getWorlds())
+				handleTick();
+			}
+		}
+		, 200, 200);
+	}
+	
+	public void SQLTask() {
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
+		{
+			public void run()
+			{
+				if(isLockDown()) {
+					if(LoginData.tryConnect(ls.this))
 					{
-						for(Entity entity : world.getEntities())
-						{
-							if(entity instanceof Player)
-							{
-								Player player = (Player)entity;
-								String pname = player.getName();
-								if(ls.this.invalid.contains(pname))
-								{
-									if(ls.this.getConfig().getBoolean("options.password-required") == true && !LoginData.hasPass(player.getName(), ls.this)){
-										player.sendMessage(ChatColor.RED + Messages.getMessage(6, ls.this));
-									}else
-									{
-										player.sendMessage(ChatColor.RED + Messages.getMessage(7, ls.this));
-									}
-								}
-							}
-						}
+						setLockDown(false);
 					}
-					/*if(delay == 60)
-					{
-						ls.this.delay = 0;
-						LoginData.PurgeDatabase(ls.this);
-					}
-					ls.this.delay++;*/
-				} catch(Exception e)
-				{
-					//nothing
 				}
 			}
 		}
-		, 20, 200);
+		, 200, 200);
 	}
 }

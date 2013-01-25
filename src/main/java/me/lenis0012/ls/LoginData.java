@@ -54,6 +54,7 @@ public class LoginData
 					password = resultSet.getString("password");
 			} catch (SQLException e) {
 				plugin.log.warning("Error while trying to get data form MySQL databse: " + e.getMessage());
+				ls.setLockDown(true);
 			}
 		}else
 			password = plugin.getCustomConfig().getString("password.password." + user);
@@ -74,6 +75,7 @@ public class LoginData
 		} catch(SQLException e)
 		{
 			plugin.log.warning("Failes saving lastlogin to Database: " + e.getMessage());
+			ls.setLockDown(true);
 		}
 	}
 	
@@ -102,6 +104,7 @@ public class LoginData
 			} catch(SQLException e)
 			{
 				plugin.log.warning("Error while trying to get data form MySQL databse: " + e.getMessage());
+				ls.setLockDown(true);
 			}
 		}else
 		{
@@ -137,6 +140,7 @@ public class LoginData
 					
 			} catch (SQLException e) {
 				plugin.log.warning("Error while trying to get data form MySQL databse: " + e.getMessage());
+				ls.setLockDown(true);
 			}
 		}else
 		{
@@ -180,13 +184,19 @@ public class LoginData
 			} catch(SQLException e)
 			{
 				plugin.log.warning("Error while purging database: " + e.getMessage());
+				ls.setLockDown(true);
 			}
 			stopCon(plugin);
 			startDrivers(plugin);
 		}
 	}
 	
-	public static void startDrivers(ls plugin)
+	public static boolean tryConnect(ls plugin) {
+		stopCon(plugin);
+		return startDrivers(plugin);
+	}
+	
+	private static boolean startDrivers(ls plugin)
 	{
 		try
 		{
@@ -208,7 +218,9 @@ public class LoginData
 		    plugin.log.warning("Error loading driver: " + e.getMessage());
 		}  catch (SQLException e) {
 			plugin.log.warning("Error while trying to login to MySQL: " + e.getMessage());
+			return false;
 		}
+		return true;
 	}
 	
 	public static void stopCon(ls plugin)

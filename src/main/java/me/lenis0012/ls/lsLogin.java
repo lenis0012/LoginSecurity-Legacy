@@ -2,6 +2,9 @@ package me.lenis0012.ls;
 
 import java.util.WeakHashMap;
 import me.lenis0012.ls.ls;
+import me.lenis0012.ls.Util.Updater.UpdateResult;
+import me.lenis0012.ls.Util.Updater.UpdateType;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -42,6 +45,11 @@ public class lsLogin implements Listener{
 		final String pname = player.getName();
 		
 		plugin.onlinePlayers.add(pname);
+		
+		if(ls.isLockDown()) {
+			player.kickPlayer("We are currently undergoing SQL problems");
+			return;
+		}
 		
 		if(!player.isOnline())
 			return;
@@ -280,6 +288,23 @@ public class lsLogin implements Listener{
 		{
 			event.setCancelled(true);
 		}
+	}
+	
+	public void showVersion(final Player player) {
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			public void run() {
+				ChatColor g = ChatColor.GREEN;
+				ChatColor r = ChatColor.RED;
+				Player p = player;
+				ls.updater.update(UpdateType.DEFAULT, false);
+				UpdateResult result = ls.updater.getResult();
+				if(result == UpdateResult.SUCCESS) {
+					p.sendMessage(g+"Succesfully updated LoginSecurity to: v"+ls.updater.getLatestVersionString());
+				} else {
+					p.sendMessage(r+"Failed to update LoginSecurity: "+ result.toString());
+				}
+			}
+		}, 25);
 	}
 	
 	public void task(final String pname)
