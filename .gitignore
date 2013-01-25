@@ -1,8 +1,0 @@
-*.class
-*.jar
-.classpath
-.project
-.gitignore
-.gitattributes
-.settings
-bin
