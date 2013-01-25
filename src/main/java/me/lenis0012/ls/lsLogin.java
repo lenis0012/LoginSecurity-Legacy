@@ -302,7 +302,7 @@ public class lsLogin implements Listener{
 				UpdateResult result = ls.updater.getResult();
 				if(result == UpdateResult.SUCCESS) {
 					p.sendMessage(g+"Succesfully updated LoginSecurity to: v"+ls.updater.getLatestVersionString());
-				} else if(result == UpdateResult.FAIL_NOVERSION) {
+				} else if(result == UpdateResult.NO_UPDATE) {
 					p.sendMessage(g+"LoginSecurity could not find an update");
 				} else {
 					p.sendMessage(r+"Failed to update LoginSecurity: "+ result.toString());
