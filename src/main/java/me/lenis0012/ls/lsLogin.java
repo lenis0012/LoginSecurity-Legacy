@@ -51,6 +51,8 @@ public class lsLogin implements Listener{
 			return;
 		}
 		
+		this.showVersion(player);
+		
 		if(!player.isOnline())
 			return;
 		
@@ -300,6 +302,8 @@ public class lsLogin implements Listener{
 				UpdateResult result = ls.updater.getResult();
 				if(result == UpdateResult.SUCCESS) {
 					p.sendMessage(g+"Succesfully updated LoginSecurity to: v"+ls.updater.getLatestVersionString());
+				} else if(result == UpdateResult.FAIL_NOVERSION) {
+					p.sendMessage(g+"LoginSecurity could not find an update");
 				} else {
 					p.sendMessage(r+"Failed to update LoginSecurity: "+ result.toString());
 				}
