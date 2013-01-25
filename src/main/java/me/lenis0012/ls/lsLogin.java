@@ -51,7 +51,8 @@ public class lsLogin implements Listener{
 			return;
 		}
 		
-		this.showVersion(player);
+		if(ls.updater != null)
+			this.showVersion(player);
 		
 		if(!player.isOnline())
 			return;

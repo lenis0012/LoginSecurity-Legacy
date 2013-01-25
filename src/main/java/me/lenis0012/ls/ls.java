@@ -69,6 +69,7 @@ public class ls extends JavaPlugin{
 		getCommand("lac").setExecutor(new AdminCommand(this));
 		
 		this.Task();
+		this.SQLTask();
 		LoginData.start(this);
 		
 		try {

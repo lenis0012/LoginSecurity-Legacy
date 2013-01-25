@@ -42,6 +42,8 @@ public class LoginData
 	
 	public static String getPass(String user, ls plugin)
 	{
+		if(ls.isLockDown())
+			return "";
 		String password = "";
 		if(plugin.getConfig().getBoolean("MySQL.use"))
 		{
@@ -53,7 +55,7 @@ public class LoginData
 				if(resultSet.next())
 					password = resultSet.getString("password");
 			} catch (SQLException e) {
-				plugin.log.warning("Error while trying to get data form MySQL databse: " + e.getMessage());
+				plugin.log.warning("Error while trying to get data from MySQL databse: " + e.getMessage());
 				ls.setLockDown(true);
 			}
 		}else
@@ -81,6 +83,8 @@ public class LoginData
 	
 	public static boolean hasPass(String user, ls plugin)
 	{
+		if(ls.isLockDown())
+			return false;
 		if(plugin.getConfig().getBoolean("MySQL.use"))
 		{
 			if(getPass(user, plugin) != "")
@@ -94,6 +98,8 @@ public class LoginData
 	
 	public static void delPass(String user, ls plugin)
 	{
+		if(ls.isLockDown())
+			return;
 		if(plugin.getConfig().getBoolean("MySQL.use"))
 		{
 			try
@@ -115,6 +121,8 @@ public class LoginData
 	
 	public static void setPass(String user, String pass, ls plugin, int mode)
 	{
+		if(ls.isLockDown())
+			return;
 		if(plugin.getConfig().getBoolean("MySQL.use"))
 		{
 			try
@@ -215,9 +223,11 @@ public class LoginData
 				first = false;
 			}
 		} catch(ClassNotFoundException e) {
-		    plugin.log.warning("Error loading driver: " + e.getMessage());
+			if(!ls.isLockDown())
+				plugin.log.warning("Error loading driver: " + e.getMessage());
 		}  catch (SQLException e) {
-			plugin.log.warning("Error while trying to login to MySQL: " + e.getMessage());
+			if(!ls.isLockDown())
+				plugin.log.warning("Error while trying to login to MySQL: " + e.getMessage());
 			return false;
 		}
 		return true;
@@ -235,7 +245,8 @@ public class LoginData
 			if(connect != null)
 				connect.close();
 		} catch (SQLException e) {
-			plugin.log.warning("Error trying to close connection: " + e);
+			if(!ls.isLockDown())
+				plugin.log.warning("Error trying to close connection: " + e);
 		}
 	}
 }
